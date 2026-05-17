@@ -39,11 +39,16 @@ Built as a modern SaaS-style application using Next.js, Supabase, and Tailwind C
 - Protected routes
 - Secure login/logout flow
 
+### 📧 Workflow Automation
+- Automated email notification integration using Resend
+- Workflow event notifications for goal submissions
+
 ### 📊 UI/UX
 - Modern dark SaaS dashboard design
 - Responsive layouts
 - Glassmorphism-inspired UI
 - Interactive analytics cards
+- 
 
 ## 🛠️ Tech Stack
 
