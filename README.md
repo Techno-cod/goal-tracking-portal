@@ -75,25 +75,25 @@ Deployment hosted on Vercel.
 
 ## 📸 Screenshots
 ### Login Page
-![Login] (public/login.png)
+![Login](public/login.png)
 
 ### Employee Login page
-![EmployeeLogin] (public/employeelogin.png)
+![EmployeeLogin](public/employeelogin.png)
 
 ### Employee Dashboard
-![Dashboard] (public/dashboard.png)
+![Dashboard](public/dashboard.png)
 
 ### Manager Dashboard
-![Manager] (public/manager.png)
+![Manager](public/manager.png)
 
 ### Admin Dashboard
-![Admin] (public/admin.png)
+![Admin](public/admin.png)
 
 ### Checkin Dashboard
-![Checkin] (public/checkin.png)
+![Checkin](public/checkin.png)
 
 ### Audit Dashboard
-![Audit] (public/audit.png)
+![Audit](public/audit.png)
 
 ## 🔄 Workflow
 
