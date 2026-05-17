@@ -6,8 +6,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "../supabase";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const role = localStorage.getItem("role");
+
+  if (role !== "Employee") {
+    router.push("/");
+  }
+}, []);
   const [goals, setGoals] = useState([
     { title: "", target: "", weightage: "", thrustArea: "", uom: "" },
   ]);

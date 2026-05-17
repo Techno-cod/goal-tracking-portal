@@ -2,8 +2,21 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import Sidebar from "@/components/ui/Sidebar";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+
+    if (role !== "Admin") {
+      router.push("/");
+    }
+  }, []);
+
+  
   const stats = [
     { title: "Employees Completed Goals", value: "18 / 25", color: "text-white" },
     { title: "Pending Approvals", value: "7", color: "text-amber-400" },

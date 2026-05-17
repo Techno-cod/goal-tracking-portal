@@ -2,30 +2,82 @@
 import { useState } from "react";
 import Sidebar from "@/components/ui/Sidebar";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../supabase";
 
 export default function ManagerPage() {
-  const [goals, setGoals] = useState([
-    { employee: "Rahul Sharma", title: "Increase Sales Revenue", target: "₹10,00,000", weightage: "40", status: "Pending", thrust: "Revenue & Growth", uom: "Min – Higher is better" },
-    { employee: "Priya Verma", title: "Reduce Customer Complaints", target: "20%", weightage: "30", status: "Pending", thrust: "Customer Experience", uom: "Max – Lower is better" },
-  ]);
+  const router = useRouter();
+  const [goals, setGoals] = useState<any[]>([]);
 
-  const handleApprove = (index: number) => {
-    const updated = [...goals];
-    updated[index].status = "Approved";
-    setGoals(updated);
-  };
+useEffect(() => {
+  const role = localStorage.getItem("role");
+  
 
-  const handleReturn = (index: number) => {
-    const updated = [...goals];
-    updated[index].status = "Returned";
-    setGoals(updated);
-  };
+  if (role !== "Manager") {
+    router.push("/");
+  }
+}, []);
+
+
+  
+
+  const handleApprove = async (index: number) => {
+  const goal = goals[index];
+
+  const { error } = await supabase
+    .from("goals")
+    .update({ status: "approved" })
+    .eq("id", goal.id);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to approve goal");
+    return;
+  }
+
+  fetchGoals();
+};
+
+  const handleReturn = async (index: number) => {
+  const goal = goals[index];
+
+  const { error } = await supabase
+    .from("goals")
+    .update({ status: "returned" })
+    .eq("id", goal.id);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to return goal");
+    return;
+  }
+
+  fetchGoals();
+};
 
   const handleChange = (index: number, field: string, value: string) => {
     const updated = [...goals];
     updated[index] = { ...updated[index], [field]: value };
     setGoals(updated);
   };
+  useEffect(() => {
+  fetchGoals();
+}, []);
+
+const fetchGoals = async () => {
+  const { data, error } = await supabase
+    .from("goals")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setGoals(data || []);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex">
@@ -52,7 +104,7 @@ export default function ManagerPage() {
             <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
               <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Pending Review</p>
               <p className="text-4xl font-black text-amber-400 mt-2">
-                {goals.filter(g => g.status === "Pending").length}
+                {goals.filter(g => g.status === "pending").length}
               </p>
             </div>
             <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
@@ -78,14 +130,14 @@ export default function ManagerPage() {
                       <h2 className="text-xl font-bold text-white">{goal.title}</h2>
                       <div className="flex gap-2 mt-2 flex-wrap">
                         <span className="bg-slate-700 text-slate-300 text-xs px-3 py-1 rounded-full">
-                          {goal.thrust}
+                          {goal.thrust_area}
                         </span>
                         <span className="bg-slate-700 text-slate-300 text-xs px-3 py-1 rounded-full">
                           {goal.uom}
                         </span>
                         <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
-                          goal.status === "Approved" ? "bg-emerald-500/20 text-emerald-400" :
-                          goal.status === "Returned" ? "bg-red-500/20 text-red-400" :
+                          goal.status === "approved" ? "bg-emerald-500/20 text-emerald-400" :
+                          goal.status === "returned" ? "bg-red-500/20 text-red-400" :
                           "bg-amber-500/20 text-amber-400"
                         }`}>
                           {goal.status}
@@ -128,7 +180,7 @@ export default function ManagerPage() {
                   </div>
 
                   {/* Action buttons */}
-                  {goal.status === "Pending" && (
+                  {goal.status === "pending" && (
                     <div className="flex flex-col gap-3 min-w-fit">
                       <Button
                         className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6"
