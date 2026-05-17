@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Sidebar from "@/components/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,10 @@ const handleReject = (index: number) => {
 };
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
+    <div className="min-h-screen bg-slate-100 flex">
+  <Sidebar />
+
+  <div className="flex-1 ml-64 p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">
           Manager Dashboard
@@ -110,6 +114,7 @@ const handleReject = (index: number) => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }

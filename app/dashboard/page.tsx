@@ -1,4 +1,5 @@
 "use client";
+import Sidebar from "@/components/ui/Sidebar";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,7 +58,10 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
+    <div className="min-h-screen bg-slate-100 flex">
+  <Sidebar />
+
+  <div className="flex-1 ml-64 p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">
           Employee Dashboard
@@ -103,6 +107,44 @@ export default function DashboardPage() {
     </CardContent>
   </Card>
 </div>
+<Card className="mb-6 border-2 border-blue-500">
+  <CardContent className="p-6">
+    <div className="flex justify-between items-center mb-4">
+      <div>
+        <h2 className="text-2xl font-semibold">
+          Shared Department Goal
+        </h2>
+
+        <p className="text-gray-500">
+          Assigned by Manager
+        </p>
+      </div>
+
+      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+        Shared KPI
+      </span>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <input
+        className="border rounded-md p-2 bg-gray-100"
+        value="Improve Customer Satisfaction"
+        disabled
+      />
+
+      <input
+        className="border rounded-md p-2 bg-gray-100"
+        value="90%"
+        disabled
+      />
+
+      <input
+        className="border rounded-md p-2"
+        placeholder="Adjust Weightage"
+      />
+    </div>
+  </CardContent>
+</Card>
 
         <Card className="mb-6">
           <CardContent className="p-6">
@@ -253,5 +295,6 @@ export default function DashboardPage() {
         </Card>
       </div>
     </div>
+  </div>
   );
 }
