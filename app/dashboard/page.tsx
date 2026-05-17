@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { supabase } from "../supabase";
 
 export default function DashboardPage() {
   const [goals, setGoals] = useState([
@@ -212,7 +213,30 @@ export default function DashboardPage() {
             <Button
               className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold disabled:opacity-40"
               disabled={totalWeightage !== 100 || submitted}
-              onClick={() => { setSubmitted(true); alert("Goals submitted for manager approval!"); }}
+              onClick={async () => {
+  const formattedGoals = goals.map((goal) => ({
+    employee_id: "dc064aa4-367b-49fd-8e41-72a8077d187a",
+    title: goal.title,
+    thrust_area: goal.thrustArea,
+    uom: goal.uom,
+    target: goal.target,
+    weightage: Number(goal.weightage),
+    status: "pending",
+  }));
+
+  const { error } = await supabase
+    .from("goals")
+    .insert(formattedGoals);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to save goals");
+    return;
+  }
+
+  setSubmitted(true);
+  alert("Goals submitted successfully!");
+}}
             >
               {submitted ? "✓ Submitted — Awaiting Manager Approval" : "Submit Goals for Approval"}
             </Button>
