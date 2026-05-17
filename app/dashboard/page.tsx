@@ -107,23 +107,32 @@ export default function DashboardPage() {
             <div className="space-y-4">
               {goals.map((goal, index) => (
                 <div
-                  key={index}
-                  className="bg-slate-900/60 border border-slate-700/40 rounded-xl p-5"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-slate-300 text-sm font-semibold">
-                      Goal {index + 1}
-                    </span>
-                    {!submitted && goals.length > 1 && (
-                      <button
-                        onClick={() => removeGoal(index)}
-                        className="text-red-400 text-xs hover:text-red-300 transition-colors"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-
+  key={index}
+  className="bg-slate-900/80 border border-slate-600/60 rounded-2xl p-6 shadow-lg"
+>
+  <div className="flex justify-between items-center mb-5 pb-4 border-b border-slate-700/50">
+    <div className="flex items-center gap-3">
+      <div className="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-black">
+        {index + 1}
+      </div>
+      <span className="text-white text-sm font-bold">
+        Goal {index + 1}
+      </span>
+      {goal.thrustArea && (
+        <span className="bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-full">
+          {goal.thrustArea}
+        </span>
+      )}
+    </div>
+    {!submitted && goals.length > 1 && (
+      <button
+        onClick={() => removeGoal(index)}
+        className="text-red-400 text-xs hover:text-red-300 transition-colors bg-red-500/10 px-3 py-1 rounded-lg"
+      >
+        Remove
+      </button>
+    )}
+  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <Input
                       placeholder="Goal Title *"
