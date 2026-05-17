@@ -245,7 +245,19 @@ useEffect(() => {
     return;
   }
 
-  setSubmitted(true);
+  await fetch("/api/send", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: "manager@demo.com",
+    subject: "New Goal Submission",
+    message:
+      "An employee has submitted goals for manager review in AtomQuest.",
+  }),
+});
+setSubmitted(true);
   alert("Goals submitted successfully!");
 }}
             >
