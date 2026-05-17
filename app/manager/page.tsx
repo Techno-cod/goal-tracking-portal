@@ -1,120 +1,156 @@
 "use client";
 import { useState } from "react";
 import Sidebar from "@/components/ui/Sidebar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export default function ManagerPage() {
   const [goals, setGoals] = useState([
-    {
-      employee: "Rahul Sharma",
-      title: "Increase Sales Revenue",
-      target: "₹10,00,000",
-      weightage: "40%",
-      status: "Pending",
-    },
-    {
-      employee: "Priya Verma",
-      title: "Reduce Customer Complaints",
-      target: "20%",
-      weightage: "30%",
-      status: "Pending",
-    },
+    { employee: "Rahul Sharma", title: "Increase Sales Revenue", target: "₹10,00,000", weightage: "40", status: "Pending", thrust: "Revenue & Growth", uom: "Min – Higher is better" },
+    { employee: "Priya Verma", title: "Reduce Customer Complaints", target: "20%", weightage: "30", status: "Pending", thrust: "Customer Experience", uom: "Max – Lower is better" },
   ]);
+
   const handleApprove = (index: number) => {
-  const updatedGoals = [...goals];
+    const updated = [...goals];
+    updated[index].status = "Approved";
+    setGoals(updated);
+  };
 
-  updatedGoals[index].status = "Approved";
+  const handleReturn = (index: number) => {
+    const updated = [...goals];
+    updated[index].status = "Returned";
+    setGoals(updated);
+  };
 
-  setGoals(updatedGoals);
-};
-
-const handleReject = (index: number) => {
-  const updatedGoals = [...goals];
-
-  updatedGoals[index].status = "Rejected";
-
-  setGoals(updatedGoals);
-};
+  const handleChange = (index: number, field: string, value: string) => {
+    const updated = [...goals];
+    updated[index] = { ...updated[index], [field]: value };
+    setGoals(updated);
+  };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex">
-  <Sidebar />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex">
+      <Sidebar />
+      <div className="flex-1 ml-72 p-10">
+        <div className="max-w-5xl mx-auto">
 
-  <div className="flex-1 ml-64 p-6">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">
-          Manager Dashboard
-        </h1>
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-black tracking-tight text-white">
+              Manager Dashboard
+            </h1>
+            <p className="text-slate-400 mt-1 text-sm">
+              Review, edit and approve employee goal submissions
+            </p>
+          </div>
 
-        <p className="text-gray-500 mb-8">
-          Review and approve employee goals
-        </p>
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-5 mb-8">
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Total Submitted</p>
+              <p className="text-4xl font-black text-white mt-2">{goals.length}</p>
+            </div>
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Pending Review</p>
+              <p className="text-4xl font-black text-amber-400 mt-2">
+                {goals.filter(g => g.status === "Pending").length}
+              </p>
+            </div>
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Approved</p>
+              <p className="text-4xl font-black text-emerald-400 mt-2">
+                {goals.filter(g => g.status === "Approved").length}
+              </p>
+            </div>
+          </div>
 
-        <div className="space-y-6">
-          {goals.map((goal, index) => (
-            <Card key={index}>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold">
-                      {goal.title}
-                    </h2>
+          {/* Goal Cards */}
+          <div className="space-y-5">
+            {goals.map((goal, index) => (
+              <div
+                key={index}
+                className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6"
+              >
+                <div className="flex justify-between items-start gap-6">
+                  <div className="flex-1 space-y-4">
 
-                    <p>
-                      <span className="font-semibold">
-                        Employee:
-                      </span>{" "}
-                      {goal.employee}
+                    {/* Title + badges */}
+                    <div>
+                      <h2 className="text-xl font-bold text-white">{goal.title}</h2>
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        <span className="bg-slate-700 text-slate-300 text-xs px-3 py-1 rounded-full">
+                          {goal.thrust}
+                        </span>
+                        <span className="bg-slate-700 text-slate-300 text-xs px-3 py-1 rounded-full">
+                          {goal.uom}
+                        </span>
+                        <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                          goal.status === "Approved" ? "bg-emerald-500/20 text-emerald-400" :
+                          goal.status === "Returned" ? "bg-red-500/20 text-red-400" :
+                          "bg-amber-500/20 text-amber-400"
+                        }`}>
+                          {goal.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Employee */}
+                    <p className="text-slate-400 text-sm">
+                      <span className="text-slate-300 font-medium">Employee:</span> {goal.employee}
                     </p>
 
-                    <p>
-                      <span className="font-semibold">
-                        Target:
-                      </span>{" "}
-                      {goal.target}
-                    </p>
+                    {/* Inline editable fields */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-2">
+                          Target
+                        </p>
+                        <input
+                          className="w-full bg-slate-900/60 border border-slate-600 rounded-lg p-2 text-white text-sm focus:border-blue-500 outline-none"
+                          value={goal.target}
+                          onChange={(e) => handleChange(index, "target", e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-2">
+                          Weightage %
+                        </p>
+                        <input
+                          type="number"
+                          min={10}
+                          max={100}
+                          className="w-full bg-slate-900/60 border border-slate-600 rounded-lg p-2 text-white text-sm focus:border-blue-500 outline-none"
+                          value={goal.weightage}
+                          onChange={(e) => handleChange(index, "weightage", e.target.value)}
+                        />
+                      </div>
+                    </div>
 
-                    <p>
-                      <span className="font-semibold">
-                        Weightage:
-                      </span>{" "}
-                      {goal.weightage}
-                    </p>
-
-                    <Badge
-  className={
-    goal.status === "Approved"
-      ? "bg-green-500"
-      : goal.status === "Rejected"
-      ? "bg-red-500"
-      : "bg-yellow-500"
-  }
->
-  {goal.status}
-</Badge>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Button onClick={() => handleApprove(index)}>
+                  {/* Action buttons */}
+                  {goal.status === "Pending" && (
+                    <div className="flex flex-col gap-3 min-w-fit">
+                      <Button
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6"
+                        onClick={() => handleApprove(index)}
+                      >
                         Approve
-                    </Button>
-
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleReject(index)}
-                       >
-                      Reject
-                   </Button>
-                  </div>
+                      </Button>
+                      <Button
+                        className="bg-slate-700 hover:bg-red-900/50 text-red-400 border border-red-500/30 rounded-xl px-6"
+                        onClick={() => handleReturn(index)}
+                      >
+                        Return for Rework
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
-    </div>
     </div>
   );
 }

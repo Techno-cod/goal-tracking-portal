@@ -1,9 +1,7 @@
 "use client";
-
 import { useState } from "react";
 import Sidebar from "@/components/ui/Sidebar";
 import { Progress } from "@/components/ui/progress";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -13,91 +11,75 @@ export default function CheckinPage() {
   const [managerComment, setManagerComment] = useState("");
   const target = 1000000;
 
-const progress =
-  achievement
-    ? Math.min(
-        (Number(achievement.replace(/,/g, "")) /
-          target) *
-          100,
-        100
-      )
+  const progress = achievement
+    ? Math.min((Number(achievement.replace(/,/g, "")) / target) * 100, 100)
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-100 flex">
-  <Sidebar />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex">
+      <Sidebar />
+      <div className="flex-1 ml-72 p-10">
+        <div className="max-w-3xl mx-auto">
 
-  <div className="flex-1 ml-64 p-6">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">
-          Quarterly Check-in
-        </h1>
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-black tracking-tight text-white">
+              Quarterly Check-in
+            </h1>
+            <p className="text-slate-400 mt-1 text-sm">
+              Q2 · October Window · Update your progress
+            </p>
+          </div>
 
-        <p className="text-gray-500 mb-8">
-          Update your progress and achievements
-        </p>
+          {/* Stat Cards */}
+          <div className="grid grid-cols-2 gap-5 mb-8">
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
+                Planned Target
+              </p>
+              <p className="text-3xl font-black text-white mt-2">₹10,00,000</p>
+              <p className="text-slate-500 text-xs mt-1">Revenue & Growth</p>
+            </div>
 
-        <Card>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <Card>
-    <CardContent className="p-4">
-      <h2 className="text-gray-500 text-sm">
-        Planned Target
-      </h2>
-
-      <p className="text-3xl font-bold mt-2">
-        ₹10,00,000
-      </p>
-    </CardContent>
-  </Card>
-
-  <Card>
-    <CardContent className="p-4">
-      <h2 className="text-gray-500 text-sm">
-        Actual Achievement
-      </h2>
-
-      <p className="text-3xl font-bold mt-2">
-        {achievement || "₹0"}
-      </p>
-      <Progress
-  value={progress}
-  className="mt-4"
-/>
-
-<p className="text-sm text-gray-500 mt-2">
-  {progress.toFixed(1)}% achieved
-</p>
-    </CardContent>
-  </Card>
-</div>
-
-            <div className="space-y-2">
-              <label className="font-medium">
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
                 Actual Achievement
-              </label>
+              </p>
+              <p className={`text-3xl font-black mt-2 ${
+                progress >= 100 ? "text-emerald-400" :
+                progress >= 50 ? "text-amber-400" : "text-slate-300"
+              }`}>
+                {achievement ? `₹${Number(achievement.replace(/,/g,"")).toLocaleString()}` : "₹0"}
+              </p>
+              <div className="mt-3">
+                <Progress value={progress} className="h-2" />
+                <p className="text-slate-500 text-xs mt-1">{progress.toFixed(1)}% achieved</p>
+              </div>
+            </div>
+          </div>
 
+          {/* Form */}
+          <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6 space-y-5">
+            <div>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-2">
+                Actual Achievement
+              </p>
               <Input
-                placeholder="Enter achievement"
+                placeholder="Enter your achievement value"
                 value={achievement}
-                onChange={(e) =>
-                  setAchievement(e.target.value)
-                }
+                onChange={(e) => setAchievement(e.target.value)}
+                className="bg-slate-900/60 border-slate-600 text-white placeholder:text-slate-500 rounded-lg"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="font-medium">
+            <div>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-2">
                 Status
-              </label>
-
+              </p>
               <select
-                className="w-full border rounded-md p-2"
+                className="w-full bg-slate-900/60 border border-slate-600 rounded-lg p-2 text-white text-sm outline-none focus:border-blue-500"
                 value={status}
-                onChange={(e) =>
-                  setStatus(e.target.value)
-                }
+                onChange={(e) => setStatus(e.target.value)}
               >
                 <option>Not Started</option>
                 <option>On Track</option>
@@ -105,33 +87,29 @@ const progress =
               </select>
             </div>
 
-            <div className="space-y-2">
-  <label className="font-medium">
-    Manager Check-in Comment
-  </label>
+            <div>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-2">
+                Manager Check-in Comment
+              </p>
+              <textarea
+                className="w-full bg-slate-900/60 border border-slate-600 rounded-lg p-3 text-white text-sm placeholder:text-slate-500 outline-none focus:border-blue-500 resize-none"
+                rows={4}
+                placeholder="Enter manager feedback for this quarter..."
+                value={managerComment}
+                onChange={(e) => setManagerComment(e.target.value)}
+              />
+            </div>
 
-  <textarea
-    className="w-full border rounded-md p-3"
-    rows={4}
-    placeholder="Enter manager feedback..."
-    value={managerComment}
-    onChange={(e) =>
-      setManagerComment(e.target.value)
-    }
-  />
-</div>
-<Button
-              className="w-full"
-              onClick={() =>
-                alert("Quarterly check-in submitted!")
-              }
+            <Button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold"
+              onClick={() => alert("Q2 Check-in submitted successfully!")}
             >
-              Submit Check-in
+              Submit Q2 Check-in
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+
+        </div>
       </div>
-    </div>
     </div>
   );
 }
