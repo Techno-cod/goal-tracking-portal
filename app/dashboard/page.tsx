@@ -14,15 +14,38 @@ export default function DashboardPage() {
 
 useEffect(() => {
   const role = localStorage.getItem("role");
-
   if (role !== "Employee") {
     router.push("/");
   }
 }, []);
+
+  useEffect(() => {
+  fetchFeedback();
+}, []);
+
+const fetchFeedback = async () => {
+  const { data, error } = await supabase
+    .from("goals")
+    .select("*")
+    .eq("status", "returned")
+    .eq("employee", "Rahul Sharma");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setFeedbacks(data || []);
+  if (data && data.length > 0) {
+  setLatestStatus(data[0].status);
+}
+};
   const [goals, setGoals] = useState([
     { title: "", target: "", weightage: "", thrustArea: "", uom: "" },
   ]);
   const [submitted, setSubmitted] = useState(false);
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  const [latestStatus, setLatestStatus] = useState("pending");
 
   const addGoal = () => {
     if (goals.length >= 8) { alert("Maximum 8 goals allowed"); return; }
@@ -94,7 +117,52 @@ useEffect(() => {
                 {submitted ? "awaiting approval" : "not yet submitted"}
               </p>
             </div>
+            <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+  <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
+    Latest Workflow Status
+  </p>
+
+  <p
+    className={`text-3xl font-black mt-2 ${
+      latestStatus === "approved"
+        ? "text-emerald-400"
+        : latestStatus === "returned"
+        ? "text-red-400"
+        : "text-amber-400"
+    }`}
+  >
+    {latestStatus}
+  </p>
+
+  <p className="text-slate-500 text-xs mt-1">
+    latest manager action
+  </p>
+</div>
           </div>
+          {feedbacks.length > 0 && (
+  <div className="mb-4 bg-red-500/5 border border-red-500/10 rounded-xl p-4">
+   <h2 className="text-red-400 font-semibold text-sm uppercase tracking-widest mb-3">
+     Returned Goals
+   </h2>
+
+    <div className="space-y-3">
+      {feedbacks.map((goal, index) => (
+        <div
+          key={index}
+          className="bg-slate-900/60 rounded-xl p-4 border border-slate-700"
+        >
+          <p className="text-white font-semibold">
+            {goal.title}
+          </p>
+
+          <p className="text-slate-300 text-sm mt-1">
+            {goal.feedback}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
           {/* Goal Sheet */}
           <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
@@ -226,6 +294,7 @@ useEffect(() => {
               disabled={totalWeightage !== 100 || submitted}
               onClick={async () => {
   const formattedGoals = goals.map((goal) => ({
+    employee: "Rahul Sharma",
     employee_id: "dc064aa4-367b-49fd-8e41-72a8077d187a",
     title: goal.title,
     thrust_area: goal.thrustArea,
@@ -233,6 +302,7 @@ useEffect(() => {
     target: goal.target,
     weightage: Number(goal.weightage),
     status: "pending",
+    submitted_at: new Date(),
   }));
 
   const { error } = await supabase
@@ -268,7 +338,16 @@ setSubmitted(true);
               <Button
                 variant="destructive"
                 className="mt-3 w-full rounded-xl h-10 text-sm"
-                onClick={() => { setSubmitted(false); }}
+               onClick={() => {
+  const password = prompt("Enter admin password");
+
+  if (password === "admin123") {
+    setSubmitted(false);
+    alert("Goals unlocked successfully");
+  } else {
+    alert("Incorrect admin password");
+  }
+}}
               >
                 Admin Unlock Goals
               </Button>

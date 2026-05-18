@@ -27,7 +27,10 @@ useEffect(() => {
 
   const { error } = await supabase
     .from("goals")
-    .update({ status: "approved" })
+    .update({
+  status: "approved",
+  approved_at: new Date(),
+})
     .eq("id", goal.id);
 
   if (error) {
@@ -39,12 +42,21 @@ useEffect(() => {
   fetchGoals();
 };
 
-  const handleReturn = async (index: number) => {
+ const handleReturn = async (index: number) => {
   const goal = goals[index];
+
+  const feedback = prompt(
+    "Enter feedback for employee:",
+    "Please revise KPI target and add measurable outcome."
+  );
 
   const { error } = await supabase
     .from("goals")
-    .update({ status: "returned" })
+    .update({
+      status: "returned",
+      returned_at: new Date(),
+      feedback: feedback || "Needs revision",
+    })
     .eq("id", goal.id);
 
   if (error) {
@@ -149,6 +161,40 @@ const fetchGoals = async () => {
                     <p className="text-slate-400 text-sm">
                       <span className="text-slate-300 font-medium">Employee:</span> {goal.employee}
                     </p>
+                    {/* Employee */}
+<p className="text-slate-400 text-sm">
+  <span className="text-slate-300 font-medium">Employee:</span> {goal.employee}
+</p>
+
+{goal.feedback && (
+  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mt-4">
+    <p className="text-red-400 text-xs font-semibold uppercase tracking-widest mb-1">
+      Feedback
+    </p>
+    <p className="text-slate-300 text-sm">
+      {goal.feedback}
+    </p>
+  </div>
+)}
+<div className="text-xs text-slate-500 space-y-1">
+  {goal.submitted_at && (
+    <p>
+      Submitted: {new Date(goal.submitted_at).toLocaleString()}
+    </p>
+  )}
+
+  {goal.approved_at && (
+    <p className="text-emerald-400">
+      Approved: {new Date(goal.approved_at).toLocaleString()}
+    </p>
+  )}
+
+  {goal.returned_at && (
+    <p className="text-red-400">
+      Returned: {new Date(goal.returned_at).toLocaleString()}
+    </p>
+  )}
+</div>
 
                     {/* Inline editable fields */}
                     <div className="grid grid-cols-2 gap-4">
