@@ -13,10 +13,19 @@ export default function DashboardPage() {
   const router = useRouter();
 
 useEffect(() => {
-  const role = localStorage.getItem("role");
-  if (role !== "Employee") {
-    router.push("/");
-  }
+  const checkAuth = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const role = localStorage.getItem("role");
+
+    if (!user || role !== "Employee") {
+      router.push("/");
+    }
+  };
+
+  checkAuth();
 }, []);
 
   useEffect(() => {
@@ -302,7 +311,7 @@ const fetchFeedback = async () => {
     target: goal.target,
     weightage: Number(goal.weightage),
     status: "pending",
-    submitted_at: new Date(),
+    submitted_at: new Date().toISOString(),
   }));
 
   const { error } = await supabase

@@ -4,17 +4,26 @@ import Sidebar from "@/components/ui/Sidebar";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "../supabase";
 
 export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
+  const checkAuth = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     const role = localStorage.getItem("role");
 
-    if (role !== "Admin") {
+    if (!user || role !== "Admin") {
       router.push("/");
     }
-  }, []);
+  };
+
+  checkAuth();
+}, []);
 
   
   const stats = [

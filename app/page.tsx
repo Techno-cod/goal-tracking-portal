@@ -21,20 +21,32 @@ export default function Home() {
       alert(error.message);
       return;
     }
+ const { data: profile, error: profileError } = await supabase
+  .from("profiles")
+  .select("role")
+  .eq("email", email)
+  .single();
 
-    localStorage.setItem("role", selectedRole);
+if (profileError || !profile) {
+  alert("Role not found");
+  return;
+}
 
-    if (selectedRole === "Employee") {
-      router.push("/dashboard");
-    }
+const role = profile.role;
 
-    if (selectedRole === "Manager") {
-      router.push("/manager");
-    }
+localStorage.setItem("role", role);
 
-    if (selectedRole === "Admin") {
-      router.push("/admin");
-    }
+if (role === "Employee") {
+  router.push("/dashboard");
+}
+
+else if (role === "Manager") {
+  router.push("/manager");
+}
+
+else if (role === "Admin") {
+  router.push("/admin");
+}
   };
 
   const roles = [
