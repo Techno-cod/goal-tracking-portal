@@ -53,6 +53,7 @@ const fetchFeedback = async () => {
     { title: "", target: "", weightage: "", thrustArea: "", uom: "" },
   ]);
   const [submitted, setSubmitted] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [latestStatus, setLatestStatus] = useState("pending");
 
@@ -284,6 +285,27 @@ const fetchFeedback = async () => {
                 </div>
               ))}
             </div>
+            <div className="mt-6 bg-slate-900/40 rounded-xl p-4">
+  <p className="text-slate-300 font-medium mb-3">
+    Upload Supporting Document
+  </p>
+
+  <input
+    type="file"
+    onChange={(e) => {
+      if (e.target.files && e.target.files[0]) {
+        setSelectedFile(e.target.files[0]);
+      }
+    }}
+    className="text-sm text-slate-300"
+  />
+
+  {selectedFile && (
+    <p className="text-emerald-400 text-xs mt-2">
+      Selected: {selectedFile.name}
+    </p>
+  )}
+</div>
 
             {/* Weightage Progress */}
             <div className="mt-6 bg-slate-900/40 rounded-xl p-4">
@@ -302,6 +324,29 @@ const fetchFeedback = async () => {
               className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold disabled:opacity-40"
               disabled={totalWeightage !== 100 || submitted}
               onClick={async () => {
+                let fileUrl = "";
+
+if (selectedFile) {
+  const cleanFileName = selectedFile.name.replace(/\s+/g, "-");
+
+const fileName = `${Date.now()}-${cleanFileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("goal-documents")
+    .upload(fileName, selectedFile);
+
+  if (uploadError) {
+    console.error(uploadError);
+    alert("File upload failed");
+    return;
+  }
+
+  const { data } = supabase.storage
+    .from("goal-documents")
+    .getPublicUrl(fileName);
+
+  fileUrl = data.publicUrl;
+}
   const formattedGoals = goals.map((goal) => ({
     employee: "Rahul Sharma",
     employee_id: "dc064aa4-367b-49fd-8e41-72a8077d187a",
@@ -312,6 +357,7 @@ const fetchFeedback = async () => {
     weightage: Number(goal.weightage),
     status: "pending",
     submitted_at: new Date().toISOString(),
+    document_url: fileUrl,
   }));
 
   const { error } = await supabase
@@ -323,6 +369,12 @@ const fetchFeedback = async () => {
     alert("Failed to save goals");
     return;
   }
+  await supabase.from("notifications").insert([
+  {
+    message: "A new goal sheet was submitted for review.",
+    role: "Manager",
+  },
+]);
 
   await fetch("/api/send", {
   method: "POST",

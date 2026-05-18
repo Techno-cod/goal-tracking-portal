@@ -8,6 +8,7 @@ import { supabase } from "../supabase";
 
 export default function ManagerPage() {
   const router = useRouter();
+  const [filter, setFilter] = useState("All");
   const [goals, setGoals] = useState<any[]>([]);
 
 useEffect(() => {
@@ -133,10 +134,29 @@ const fetchGoals = async () => {
               </p>
             </div>
           </div>
+          <div className="flex gap-3 mb-6">
+  {["All", "pending", "approved", "returned"].map((status) => (
+    <button
+      key={status}
+      onClick={() => setFilter(status)}
+      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+        filter === status
+          ? "bg-blue-600 text-white"
+          : "bg-slate-800 text-slate-300 border border-slate-700"
+      }`}
+    >
+      {status}
+    </button>
+  ))}
+</div>
 
           {/* Goal Cards */}
           <div className="space-y-5">
-            {goals.map((goal, index) => (
+            {goals
+  .filter((goal) =>
+    filter === "All" ? true : goal.status === filter
+  )
+  .map((goal, index) => (
               <div
                 key={index}
                 className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6"
@@ -178,6 +198,7 @@ const fetchGoals = async () => {
       {goal.feedback}
     </p>
   </div>
+  
 )}
 <div className="text-xs text-slate-500 space-y-1">
   {goal.submitted_at && (
@@ -198,6 +219,18 @@ const fetchGoals = async () => {
     </p>
   )}
 </div>
+{goal.document_url && (
+  <div className="mt-4">
+    <a
+      href={goal.document_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-400 text-sm hover:underline"
+    >
+      View Supporting Document
+    </a>
+  </div>
+)}
 
                     {/* Inline editable fields */}
                     <div className="grid grid-cols-2 gap-4">

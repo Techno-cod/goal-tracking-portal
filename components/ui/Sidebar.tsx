@@ -3,9 +3,33 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/supabase";
+import { Bell } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const router = useRouter();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  useEffect(() => {
+  fetchNotifications();
+}, []);
+
+const fetchNotifications = async () => {
+  const role = localStorage.getItem("role");
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("role", role)
+    .eq("is_read", false)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setNotifications(data || []);
+};
 
 const handleLogout = async () => {
   await supabase.auth.signOut();
@@ -25,6 +49,21 @@ const handleLogout = async () => {
           Goal Tracking Portal
         </p>
       </div>
+      <div className="relative mb-6">
+  <div className="flex items-center gap-2 text-slate-300">
+    <Bell size={18} />
+
+    <span className="text-sm font-medium">
+      Notifications
+    </span>
+
+    {notifications.length > 0 && (
+      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+        {notifications.length}
+      </span>
+    )}
+  </div>
+</div>
 
       <div className="space-y-3">
         <Link
