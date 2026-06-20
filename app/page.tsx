@@ -95,6 +95,55 @@ else if (role === "Admin") {
               <p className="text-slate-400 text-sm mb-8">
                 Select your role to continue
               </p>
+              <div className="mb-6">
+  <p className="text-slate-500 text-xs uppercase tracking-widest mb-3">
+    Demo Accounts
+  </p>
+
+  <div className="space-y-2">
+    <button
+      onClick={() => {
+        setSelectedRole("Employee");
+        setEmail("employee@demo.com");
+        setPassword("employee123");
+      }}
+      className="w-full text-left bg-slate-900 border border-slate-700 rounded-lg p-3 hover:border-blue-500 transition"
+    >
+      <p className="text-white text-sm font-medium">Employee Demo</p>
+      <p className="text-slate-400 text-xs">
+        employee@demo.com
+      </p>
+    </button>
+
+    <button
+      onClick={() => {
+        setSelectedRole("Manager");
+        setEmail("manager@demo.com");
+        setPassword("manager123");
+      }}
+      className="w-full text-left bg-slate-900 border border-slate-700 rounded-lg p-3 hover:border-purple-500 transition"
+    >
+      <p className="text-white text-sm font-medium">Manager Demo</p>
+      <p className="text-slate-400 text-xs">
+        manager@demo.com
+      </p>
+    </button>
+
+    <button
+      onClick={() => {
+        setSelectedRole("Admin");
+        setEmail("admin@demo.com");
+        setPassword("admin123");
+      }}
+      className="w-full text-left bg-slate-900 border border-slate-700 rounded-lg p-3 hover:border-green-500 transition"
+    >
+      <p className="text-white text-sm font-medium">Admin Demo</p>
+      <p className="text-slate-400 text-xs">
+        admin@demo.com
+      </p>
+    </button>
+  </div>
+</div>
 
               <div className="space-y-3">
                 {roles.map((r) => (
